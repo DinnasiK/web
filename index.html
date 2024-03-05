@@ -7,9 +7,21 @@
     <header class="header">
         <img src="image/Kit.jpeg" alt="LogoKit" class="logo">
         <div class="headText">
-            <p onclick="scrollToDiv('liquid')">Рідкі страви</p>
-            <p onclick="scrollToDiv('hot')">Гарячі страви</p>
-            <p onclick="scrollToDiv('cold')">Холодні страви</p>
+            <div class="menu-large">
+                <p onclick="scrollToDiv('liquid')">Рідкі страви</p>
+                <p onclick="scrollToDiv('hot')">Гарячі страви</p>
+                <p onclick="scrollToDiv('cold')">Холодні страви</p>
+            </div>
+            <div class="menu-small">
+                <div class="dropdown" id="dropdown">
+                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="bars" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="menu-icon" id="menu-icon"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" class=""></path></svg>
+                    <div class="dropdown-content">
+                        <p onclick="scrollToDiv('liquid'); closeDropdown()">Рідкі страви</p>
+                        <p onclick="scrollToDiv('hot'); closeDropdown()">Гарячі страви</p>
+                        <p onclick="scrollToDiv('cold'); closeDropdown()">Холодні страви</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
     <main class="main">
@@ -145,5 +157,34 @@
         var element = document.getElementById(divId);
         element.scrollIntoView({ behavior: 'smooth' });
     }
+
+    function closeDropdown() {
+        var dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.classList.remove('show');
+
+        var catImage = document.querySelector('.logo');
+        catImage.style.width = '70px';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var menuIcon = document.getElementById('menu-icon');
+        var dropdownContent = document.querySelector('.dropdown-content');
+        var catImage = document.querySelector('.logo');
+
+        menuIcon.addEventListener('click', function() {
+            event.stopPropagation();
+            dropdownContent.classList.toggle('show');
+            catImage.style.width = '350px';
+        });
+
+        document.addEventListener('click', function(event) {
+            var targetElement = event.target;
+            var isMenu = targetElement.closest('.dropdown-content');
+
+            if (!isMenu) {
+                closeDropdown();
+            }
+        });
+    });
 </script>
 </html>

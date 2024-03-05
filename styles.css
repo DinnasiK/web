@@ -16,18 +16,18 @@ body, html {
 }
 
 .logo {
-  width: 60px;
+  width: 70px;
   height: auto;
   border-radius: 10px 30px;
 }
 
-.headText {
+.menu-large {
   font-family: Arial;
   display: flex;
   color: white;
 }
 
-.headText p {
+.menu-large p {
   padding: 5px 18px;
   background-color: rgb(4, 212, 45);
   cursor: pointer;
@@ -35,7 +35,7 @@ body, html {
   border-radius: 20px;
 }
 
-.headText p:hover {
+.menu-large p:hover {
   font-weight: bold;
   background-color: green;
 }
@@ -62,6 +62,63 @@ body, html {
   color: white;
   padding: 0 0 5px 0;
   margin: 0;
+}
+
+.menu-small {
+  font-size: 2rem;
+  font-family: Arial;
+  color: white;
+  background-color: rgb(4, 212, 45);
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.menu-small p {
+  padding: 5px 18px;
+  background-color: rgb(5, 169, 5);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+}
+
+.menu-small p:hover {
+  font-weight: bold;
+  background-color: green;
+}
+
+.menu-icon {
+  display: inline-block;
+  font-size: inherit;
+  height: 1em;
+  vertical-align: -0.125em;
+  cursor: pointer;
+}
+
+.menu-small {
+  display: none;
+}
+
+.dropdown-content {
+  display: none;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+@media screen and (max-width: 993px) {
+  .menu-large {
+    display: none;
+  }
+  .menu-small {
+    display: block;
+  }
+  .recimage {
+    height: 550px;
+  }
+  .recdiv p {
+    height: 550px;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */
