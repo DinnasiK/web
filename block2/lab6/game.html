@@ -39,6 +39,12 @@
             Видалити стіни
         </button>
     </div>
+    <div class="score-container">
+        <h2>3 найкращі результати:</h2>
+        <ul id="topScores"></ul>
+        <h2>3 найгірши результати:</h2>
+        <ul id="bottomScores"></ul>
+    </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -101,6 +107,7 @@
         }
 
         function resetGame() {
+            saveScore();
             snake = [{ x: 10, y: 10 }];
             dx = 0;
             dy = 0;
@@ -150,6 +157,31 @@
             }
         });
 
+        let allScores = [];
+
+        function saveScore() {
+            allScores.push(score);
+            allScores.sort((a, b) => b - a);
+            updateScores();
+        }
+
+        function updateScores() {
+            const topScoresList = document.getElementById('topScores');
+            const bottomScoresList = document.getElementById('bottomScores');
+            topScoresList.innerHTML = '';
+            bottomScoresList.innerHTML = '';
+            for (let i = 0; i < Math.min(3, allScores.length); i++) {
+                const listItem = document.createElement('li');
+                listItem.textContent = allScores[i];
+                topScoresList.appendChild(listItem);
+            }
+            for (let i = allScores.length - 1; i >= Math.max(0, allScores.length - 3); i--) {
+                const listItem = document.createElement('li');
+                listItem.textContent = allScores[i];
+                bottomScoresList.appendChild(listItem);
+            }
+        }
+
         const addWallButton = document.getElementById('addWallButton');
         addWallButton.addEventListener('click', () => {
             const wallX = Math.floor(Math.random() * (canvas.width / gridSize));
@@ -161,8 +193,6 @@
         removeWallButton.addEventListener('click', () => {
             walls = [];
         });
-
-        setInterval(updateGame, 100);
     </script>
 </body>
 
