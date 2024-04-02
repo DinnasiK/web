@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест</title>
+</head>
+
+<body>
+    <div id="test-container">
+        <h1 id="test-name"></h1>
+        <div id="questions-container"></div>
+        <button id="submit-btn">Відправити</button>
+        <div id="results-container"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const data = {
+                "testName": "Тест",
+                "questions": [
+                    {
+                        "question": "Скільки буде 5 + 7?",
+                        "answers": [
+                            { "answer": "12", "isCorrect": true },
+                            { "answer": "10", "isCorrect": false },
+                            { "answer": "14", "isCorrect": false },
+                            { "answer": "8", "isCorrect": false }
+                        ]
+                    },
+                    {
+                        "question": "Яка кількість кутів у прямокутника?",
+                        "answers": [
+                            { "answer": "2", "isCorrect": false },
+                            { "answer": "3", "isCorrect": false },
+                            { "answer": "4", "isCorrect": true },
+                            { "answer": "5", "isCorrect": false }
+                        ]
+                    },
+                    {
+                        "question": "Яке число є результатом ділення 18 на 3?",
+                        "answers": [
+                            { "answer": "5", "isCorrect": false },
+                            { "answer": "6", "isCorrect": true },
+                            { "answer": "4", "isCorrect": false },
+                            { "answer": "9", "isCorrect": false }
+                        ]
+                    },
+                    {
+                        "question": "Чому дорівнює 100?",
+                        "answers": [
+                            { "answer": "101", "isCorrect": false },
+                            { "answer": "100", "isCorrect": true },
+                            { "answer": "111", "isCorrect": false },
+                            { "answer": "001", "isCorrect": false }
+                        ]
+                    },
+                    {
+                        "question": "Яка фігура має 6 сторін?",
+                        "answers": [
+                            { "answer": "круг", "isCorrect": false },
+                            { "answer": "квадрат", "isCorrect": false },
+                            { "answer": "шестикутник", "isCorrect": true },
+                            { "answer": "трикутник", "isCorrect": false }
+                        ]
+                    }
+                ]
+            };
+
+            const testName = data.testName;
+            const questions = data.questions;
+            const testContainer = document.getElementById('test-container');
+            const questionsContainer = document.getElementById('questions-container');
+            const resultsContainer = document.getElementById('results-container');
+            const submitBtn = document.getElementById('submit-btn');
+            let score = 0;
+
+            document.getElementById('test-name').textContent = testName;
+
+            questions.forEach((question, index) => {
+                const questionElem = document.createElement('div');
+                questionElem.classList.add('question');
+                questionElem.textContent = `${index + 1}. ${question.question}`;
+
+                question.answers.forEach(answer => {
+                    const answerElem = document.createElement('input');
+                    answerElem.type = 'radio';
+                    answerElem.name = `question${index}`;
+                    answerElem.value = answer.answer;
+                    answerElem.setAttribute('data-is-correct', answer.isCorrect);
+                    const labelElem = document.createElement('label');
+                    labelElem.textContent = answer.answer;
+                    const containerElem = document.createElement('div');
+                    containerElem.classList.add('answer');
+                    containerElem.appendChild(answerElem);
+                    containerElem.appendChild(labelElem);
+
+                    containerElem.addEventListener('click', function () {
+                        const selectedAnswer = containerElem.querySelector('input[type=radio]:checked');
+                        if (selectedAnswer) {
+                            const isCorrect = selectedAnswer.getAttribute('data-is-correct') === 'true';
+                            if (isCorrect) {
+                                score++;
+                            }
+                        }
+                    });
+
+                    questionElem.appendChild(containerElem);
+                });
+
+                questionsContainer.appendChild(questionElem);
+            });
+
+            submitBtn.addEventListener('click', function () {
+                const allAnswers = questionsContainer.querySelectorAll('.answer');
+                allAnswers.forEach(answer => {
+                    answer.style.backgroundColor = '';
+                    answer.style.color = '';
+                });
+
+                const selectedAnswers = questionsContainer.querySelectorAll('input[type=radio]:checked');
+                selectedAnswers.forEach(selectedAnswer => {
+                    const containerElem = selectedAnswer.parentNode;
+                    const isCorrect = selectedAnswer.getAttribute('data-is-correct') === 'true';
+                    containerElem.style.backgroundColor = isCorrect ? '#28a745' : '#dc3545';
+                    containerElem.style.color = '#fff';
+                });
+
+                const percentage = Math.round((score / questions.length) * 100);
+                const resultText = `Ви відповіли на ${score} з ${questions.length} питань правильно. (${percentage}%)`;
+                resultsContainer.textContent = resultText;
+
+                score = 0;
+            });
+        });
+    </script>
+</body>
+
+</html>
