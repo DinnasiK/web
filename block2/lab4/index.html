@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Опитування</title>
+</head>
+
+<body>
+  <h2>Військкомат</h2>
+  <form id="submit_form" action="/submit_form" method="post">
+    <label for="gender">Стать</label><br>
+    <select id="gender" name="gender">
+      <option value="Чоловік">Чоловік</option>
+      <option value="Жінка">Жінка</option>
+    </select><br><br>
+
+    <label for="fullname">Прізвище ім'я</label><br>
+    <input type="text" name="fullname" id="fullname"><br><br>
+
+    <label for="birth">Дата народження</label><br>
+    <input type="date" id="birth" name="birth"><br><br>
+
+    <label for="age">Вкажіть свій вік</label><br>
+    <input type="number" id="age" name="age" min="0" max="100"><br><br>
+
+    <label for="height">Ваш зріст <span id="heightValue">150 см</span></label><br>
+    <input type="range" id="height" name="height" min="50" max="250"
+      oninput="heightValue.textContent = this.value + ' см'"><br><br>
+
+    <label for="city">Ваше місто</label><br>
+    <input type="radio" id="lviv" name="city" value="lviv">
+    <label for="lviv">Львів</label><br>
+    <input type="radio" id="kyiv" name="city" value="kyiv">
+    <label for="kyiv">Київ</label><br>
+    <input type="radio" id="kharkiv" name="city" value="kharkiv">
+    <label for="kharkiv">Харків</label><br><br>
+
+    <label for="rank">Ким хочете бути</label><br>
+    <input type="checkbox" id="shturmovyk" name="rank" value="shturmovyk">
+    <label for="shturmovyk">Штурмовик</label><br>
+    <input type="checkbox" id="tankist" name="rank" value="tankist">
+    <label for="tankist">Танкіст</label><br>
+    <input type="checkbox" id="liotchyk" name="rank" value="liotchyk">
+    <label for="liotchyk">Льотчик</label><br><br>
+
+    <label for="time">Вкажіть час о котрій зможете сьогодні підійти до військкомату</label><br>
+    <input type="time" id="time" name="time"><br><br>
+
+    <label for="email">Електронна пошта:</label><br>
+    <input type="email" id="email" name="email"><br><br>
+
+    <label for="color">Який колір вам подобається</label><br>
+    <input type="color" id="color" name="color"><br><br>
+
+    <input type="submit" value="Надіслати"><br><br>
+  </form>
+
+  <label for="filterGender">Фільтр по статі:</label>
+  <select id="filterGender">
+    <option value="all">Усі</option>
+    <option value="Чоловік">Чоловіки</option>
+    <option value="Жінка">Жінки</option>
+  </select><br>
+  <button type="button" onclick="filterByGender()">Фільтрувати</button><br>
+
+  <ul id="filteredResultsGender"></ul><br>
+
+  <label for="ageFrom">Вік від:</label>
+  <input type="number" id="ageFrom" min="0" max="100">
+  <label for="ageTo">до:</label>
+  <input type="number" id="ageTo" min="0" max="100"><br>
+  <button type="button" onclick="filterByAge()">Фільтрувати</button><br>
+
+  <ul id="filteredResultsAge"></ul><br>
+
+  <label for="filterTime">Фільтр по часу:</label>
+  <input type="time" id="filterTime"><br>
+  <button type="button" onclick="filterByTime()">Фільтрувати</button><br>
+
+  <ul id="filteredResultsTime"></ul>
+</body>
+
+<script>
+  function submitForm() {
+    var genderValue = document.getElementById('gender').value;
+    var fullnameValue = document.getElementById('fullname').value;
+    var birthValue = document.getElementById('birth').value;
+    var ageValue = document.getElementById('age').value;
+    var heightValue = document.getElementById('height').value;
+
+    var cityValue;
+    var cityInputs = document.getElementsByName('city');
+    for (var i = 0; i < cityInputs.length; i++) {
+      if (cityInputs[i].checked) {
+        cityValue = cityInputs[i].value;
+        break;
+      }
+    }
+
+    var rankValues = [];
+    var rankInputs = document.getElementsByName('rank');
+    for (var j = 0; j < rankInputs.length; j++) {
+      if (rankInputs[j].checked) {
+        rankValues.push(rankInputs[j].value);
+      }
+    }
+
+    var timeValue = document.getElementById('time').value;
+    var emailValue = document.getElementById('email').value;
+    var colorValue = document.getElementById('color').value;
+
+    var surveyResults = {
+      gender: genderValue,
+      fullname: fullnameValue,
+      birth: birthValue,
+      age: ageValue,
+      height: heightValue,
+      city: cityValue,
+      rank: rankValues,
+      time: timeValue,
+      email: emailValue,
+      color: colorValue
+    };
+
+    var timestamp = new Date().getTime();
+    var surveyKey = 'surveyResults_' + timestamp;
+
+    localStorage.setItem(surveyKey, JSON.stringify(surveyResults));
+
+    alert('Результати опитування збережено в LocalStorage під ключем: ' + surveyKey);
+
+    document.getElementById('submit_form').reset();
+  }
+
+  document.getElementById('submit_form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    submitForm();
+  });
+
+  function filterByGender() {
+    var filterValue = document.getElementById('filterGender').value;
+    var filteredList = [];
+
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key.includes('surveyResults_')) {
+        var surveyResults = JSON.parse(localStorage.getItem(key));
+        if (filterValue === 'all' || surveyResults.gender === filterValue) {
+          filteredList.push(surveyResults.fullname + ", " + surveyResults.age + " рік(ів), " + surveyResults.gender);
+        }
+      }
+    }
+
+    displayFilteredResults(filteredList, 'filteredResultsGender');
+  }
+
+  function filterByAge() {
+    var ageFrom = parseInt(document.getElementById('ageFrom').value, 10);
+    var ageTo = parseInt(document.getElementById('ageTo').value, 10);
+    var filteredList = [];
+
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key.includes('surveyResults_')) {
+        var surveyResults = JSON.parse(localStorage.getItem(key));
+        var age = parseInt(surveyResults.age, 10);
+        if ((!isNaN(ageFrom) && age >= ageFrom) && (!isNaN(ageTo) && age <= ageTo)) {
+          filteredList.push(surveyResults.fullname + ' (' + surveyResults.age + ' років)');
+        }
+      }
+    }
+
+    displayFilteredResults(filteredList, 'filteredResultsAge');
+  }
+
+  function filterByTime() {
+    var filterValue = document.getElementById('filterTime').value;
+    var filteredList = [];
+
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key.includes('surveyResults_')) {
+        var surveyResults = JSON.parse(localStorage.getItem(key));
+        if (surveyResults.time === filterValue) {
+          filteredList.push(surveyResults.fullname + " на " + filterValue);
+        }
+      }
+    }
+
+    displayFilteredResults(filteredList, 'filteredResultsTime');
+  }
+
+  function displayFilteredResults(results, targetId) {
+    var targetElement = document.getElementById(targetId);
+    targetElement.innerHTML = '';
+
+    if (results.length === 0) {
+      targetElement.innerHTML = '<li>Таких бійців немає</li>';
+    } else {
+      results.forEach(function (item) {
+        var li = document.createElement('li');
+        li.textContent = item;
+        targetElement.appendChild(li);
+      });
+    }
+  }
+</script>
+
+</html>
