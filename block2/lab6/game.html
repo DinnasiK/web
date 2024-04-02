@@ -14,11 +14,31 @@
             margin: 0;
             background-color: white;
         }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            margin: 5px;
+        }
     </style>
 </head>
 
 <body>
     <canvas id="gameCanvas" width="600" height="600" style="background-color: blue;"></canvas>
+    <div class="button-container">
+        <button id="addWallButton" style="font-size: 20px; background-color: black; color: white; border-radius: 20%;">
+            Додати стіну
+        </button>
+        <button id="removeWallButton"
+            style="font-size: 20px; background-color: black; color: white; border-radius: 20%;">
+            Видалити стіни
+        </button>
+    </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -26,6 +46,7 @@
         const gridSize = 30;
         let snake = [{ x: 10, y: 10 }];
         let food = { x: 15, y: 15 };
+        let walls = [];
         let dx = 0;
         let dy = 0;
         let score = 0;
@@ -38,6 +59,11 @@
         function drawFood() {
             ctx.fillStyle = 'red';
             ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+        }
+
+        function drawWalls() {
+            ctx.fillStyle = 'black';
+            walls.forEach(wall => ctx.fillRect(wall.x * gridSize, wall.y * gridSize, gridSize, gridSize));
         }
 
         function moveSnake() {
@@ -66,6 +92,12 @@
                     break;
                 }
             }
+            for (let wall of walls) {
+                if (snake[0].x === wall.x && snake[0].y === wall.y) {
+                    resetGame();
+                    break;
+                }
+            }
         }
 
         function resetGame() {
@@ -80,6 +112,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawSnake();
             drawFood();
+            drawWalls();
             moveSnake();
             checkCollision();
             ctx.fillStyle = 'black';
@@ -115,6 +148,18 @@
                     }
                     break;
             }
+        });
+
+        const addWallButton = document.getElementById('addWallButton');
+        addWallButton.addEventListener('click', () => {
+            const wallX = Math.floor(Math.random() * (canvas.width / gridSize));
+            const wallY = Math.floor(Math.random() * (canvas.height / gridSize));
+            walls.push({ x: wallX, y: wallY });
+        });
+
+        const removeWallButton = document.getElementById('removeWallButton');
+        removeWallButton.addEventListener('click', () => {
+            walls = [];
         });
 
         setInterval(updateGame, 100);
